@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HandyHangoutStudios.Parsers\HandyHangoutStudios.Parsers.csproj" />
+    <ProjectReference Include="..\HandyHangoutStudios.Common\HandyHangoutStudios.Common.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30608.117
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandyHangoutStudios.Parsers", "HandyHangoutStudios.Parsers\HandyHangoutStudios.Parsers.csproj", "{E8A22E5A-C92E-48D4-B5E5-C0129D6551FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HandyHangoutStudios.Common", "HandyHangoutStudios.Common\HandyHangoutStudios.Common.csproj", "{E8A22E5A-C92E-48D4-B5E5-C0129D6551FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandyHangoutStudios.Parsers.Tests", "HandyHangoutStudios.Parsers.Tests\HandyHangoutStudios.Parsers.Tests.csproj", "{2FDD45C0-6B79-4406-86D0-A5A3EC2C117B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HandyHangoutStudios.Common.Tests", "HandyHangoutStudios.Common.Tests\HandyHangoutStudios.Common.Tests.csproj", "{2FDD45C0-6B79-4406-86D0-A5A3EC2C117B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
