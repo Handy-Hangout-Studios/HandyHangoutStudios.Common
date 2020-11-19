@@ -8,6 +8,7 @@
     <Description>A package of common utilities used by the Handy Hangout Studios Devs.</Description>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <RepositoryUrl>https://github.com/Handy-Hangout-Studios/HandyHangoutStudios.Common</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
