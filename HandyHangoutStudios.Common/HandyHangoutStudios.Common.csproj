@@ -5,13 +5,19 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>John Marsden</Authors>
     <Company>Handy Hangout Studios</Company>
-    <Description>A package of common utilities used by the Handy Hangout Studios Devs.</Description>
+    <Description>A package of common utilities used by the Handy Hangout Studios Devs.
+
+Change Log
+1.0.0 -&gt; 1.0.1
+- Changed from using Period to Duration in the DateTimeV2Value Class for types of DateTimeV2Type.Duration</Description>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <RepositoryUrl>https://github.com/Handy-Hangout-Studios/HandyHangoutStudios.Common</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.28" />
     <PackageReference Include="Microsoft.Recognizers.Text.DataTypes.TimexExpression" Version="1.4.2" />
     <PackageReference Include="Microsoft.Recognizers.Text.DateTime" Version="1.4.2" />
     <PackageReference Include="NodaTime" Version="3.0.3" />

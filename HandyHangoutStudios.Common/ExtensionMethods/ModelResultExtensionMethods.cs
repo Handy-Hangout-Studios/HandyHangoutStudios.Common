@@ -1,5 +1,4 @@
-﻿//    HandyHanselStudios.Parsers, rerepresents the output of the Microsoft
-//    Recognizers using Classes in order to make the usage of them easier
+﻿//    HandyHangoutStudios.Common, common classes for use by the Handy Hangout Dev Team
 //    Copyright (C) 2020 John Marsden
 
 //    This program is free software: you can redistribute it and/or modify
@@ -18,6 +17,7 @@
 using HandyHangoutStudios.Parsers.Models;
 using HandyHangoutStudios.Parsers.Resolutions;
 using Microsoft.Recognizers.Text;
+using NodaTime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +26,7 @@ namespace HandyHangoutStudios.Parsers
 {
     public static class ModelResultExtensionMethods
     {
-        public static DateTimeV2ModelResult ToDateTimeV2ModelResult(this ModelResult modelResult)
+        public static DateTimeV2ModelResult ToDateTimeV2ModelResult(this ModelResult modelResult, DateTimeZone timeZone)
         {
             return new DateTimeV2ModelResult()
             {
@@ -34,7 +34,7 @@ namespace HandyHangoutStudios.Parsers
                 TypeName = modelResult.GetDateTimeV2Type(),
                 Start = modelResult.Start,
                 End = modelResult.End,
-                Values = modelResult.GetDateTimeV2Values()
+                Values = modelResult.GetDateTimeV2Values(timeZone)
             };
         }
 
@@ -44,10 +44,10 @@ namespace HandyHangoutStudios.Parsers
             return Enum.Parse<DateTimeV2Type>(modelType, true);
         }
 
-        private static IEnumerable<DateTimeV2Value> GetDateTimeV2Values(this ModelResult model)
+        private static IEnumerable<DateTimeV2Value> GetDateTimeV2Values(this ModelResult model, DateTimeZone timeZone)
         {
             List<Dictionary<string, string>> values = (List<Dictionary<string, string>>) model.Resolution["values"];
-            return values.Select(value => new DateTimeV2Value(value)); // timex, type, value
+            return values.Select(value => new DateTimeV2Value(value, timeZone)); // timex, type, value
         }
     }
 }

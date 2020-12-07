@@ -1,5 +1,4 @@
-﻿//    HandyHanselStudios.Parsers, rerepresents the output of the Microsoft
-//    Recognizers using Classes in order to make the usage of them easier
+﻿//    HandyHangoutStudios.Common, common classes for use by the Handy Hangout Dev Team
 //    Copyright (C) 2020 John Marsden
 
 //    This program is free software: you can redistribute it and/or modify
@@ -18,6 +17,7 @@
 using HandyHangoutStudios.Parsers.Models;
 using Microsoft.Recognizers.Text.DataTypes.TimexExpression;
 using NodaTime;
+using NodaTime.Extensions;
 using NodaTime.Text;
 using System;
 using System.Collections.Generic;
@@ -30,78 +30,103 @@ namespace HandyHangoutStudios.Parsers.Resolutions
         public DateTimeV2Type Type { get; init; }
         public object Value { get; init; }
 
-        public DateTimeV2Value()
-        {
+        private DateTimeZone timeZone;
 
-        }
+        public DateTimeV2Value() {}
 
-        public DateTimeV2Value(IDictionary<string, string> value)
+        public DateTimeV2Value(IDictionary<string, string> value, DateTimeZone timeZone)
         {
+            this.timeZone = timeZone;
             Timex = new TimexProperty(value["timex"]);
             Type = Enum.Parse<DateTimeV2Type>(value["type"], true);
 
-            if (Type is DateTimeV2Type.Date)
+            Value = Type switch
             {
-                ParseResult<LocalDate> dateParsed = LocalDatePattern.CreateWithInvariantCulture("uuuu-MM-dd").Parse(value["value"]);
-                Value = dateParsed.GetValueOrThrow();
-            }
-            else if (Type is DateTimeV2Type.DateRange)
+                DateTimeV2Type.Date => CreateDateValue(value["value"]),
+                DateTimeV2Type.DateRange => CreateDateRangeValue(value["start"], value["end"]),
+                DateTimeV2Type.DateTime => CreateDateTimeValue(value["value"]),
+                DateTimeV2Type.DateTimeRange => CreateDateTimeRange(value["start"], value["end"]),
+                DateTimeV2Type.Duration => CreateDurationValue(value["value"]),
+                DateTimeV2Type.Time => CreateTimeValue(value["value"]),
+                DateTimeV2Type.TimeRange => CreateTimeRangeValue(value["start"], value["end"]),
+                DateTimeV2Type.Set => null,
+                _ => throw new Exception("A type was passed that hasn't been implemented for the Value in this model.")
+            };
+        }
+
+        private static Range<LocalTime> CreateTimeRangeValue(string start, string end)
+        {
+            LocalTimePattern pattern = LocalTimePattern.CreateWithInvariantCulture("HH:mm:ss");
+            ParseResult<LocalTime> startTimeParsed = pattern.Parse(start);
+            ParseResult<LocalTime> endTimeParsed = pattern.Parse(end);
+            return new Range<LocalTime>()
             {
-                LocalDatePattern pattern = LocalDatePattern.CreateWithInvariantCulture("uuuu-MM-dd");
-                ParseResult<LocalDate> startDateParsed = pattern.Parse(value["start"]);
-                ParseResult<LocalDate> endDateParsed = pattern.Parse(value["end"]);
-                Value = new Range<LocalDate>()
-                {
-                    Start = startDateParsed.GetValueOrThrow(),
-                    End = endDateParsed.GetValueOrThrow()
-                };
-            }
-            else if (Type is DateTimeV2Type.DateTime)
+                Start = startTimeParsed.GetValueOrThrow(),
+                End = endTimeParsed.GetValueOrThrow()
+            };
+        }
+
+        private LocalTime CreateTimeValue(string value)
+        {
+            if (this.Timex.Now is true)
             {
-                LocalDateTimePattern pattern = LocalDateTimePattern.CreateWithInvariantCulture("uuuu-MM-dd HH:mm:ss");
-                ParseResult<LocalDateTime> dateTimeParsed = pattern.Parse(value["value"]);
-                Value = dateTimeParsed.GetValueOrThrow();
+                return SystemClock.Instance.InZone(this.timeZone).GetCurrentLocalDateTime().TimeOfDay;
             }
-            else if (Type is DateTimeV2Type.DateTimeRange)
+            ParseResult<LocalTime> timeParsed = LocalTimePattern.CreateWithInvariantCulture("HH:mm:ss").Parse(value);
+            return timeParsed.GetValueOrThrow();
+        }
+
+        private static Duration CreateDurationValue(string value)
+        {
+            return Duration.FromSeconds(long.Parse(value));
+        }
+
+        private static Range<LocalDateTime> CreateDateTimeRange(string start, string end)
+        {
+            LocalDateTimePattern pattern = LocalDateTimePattern.CreateWithInvariantCulture("uuuu-MM-dd HH:mm:ss");
+            ParseResult<LocalDateTime> startDateTimeParsed = pattern.Parse(start);
+            ParseResult<LocalDateTime> endDateTimeParsed = pattern.Parse(end);
+            return new Range<LocalDateTime>()
             {
-                LocalDateTimePattern pattern = LocalDateTimePattern.CreateWithInvariantCulture("uuuu-MM-dd HH:mm:ss");
-                ParseResult<LocalDateTime> startDateTimeParsed = pattern.Parse(value["start"]);
-                ParseResult<LocalDateTime> endDateTimeParsed = pattern.Parse(value["end"]);
-                Value = new Range<LocalDateTime>()
-                {
-                    Start = startDateTimeParsed.GetValueOrThrow(),
-                    End = endDateTimeParsed.GetValueOrThrow()
-                };
-            }
-            else if (Type is DateTimeV2Type.Duration)
+                Start = startDateTimeParsed.GetValueOrThrow(),
+                End = endDateTimeParsed.GetValueOrThrow()
+            };
+        }
+
+        private LocalDate CreateDateValue(string value)
+        {
+            if (this.Timex.Now is true)
             {
-                long seconds = long.Parse(value["value"]);
-                Value = Period.FromSeconds(seconds);
+                return SystemClock.Instance.InZone(this.timeZone).GetCurrentLocalDateTime().Date;
             }
-            else if (Type is DateTimeV2Type.Set)
+
+            ParseResult<LocalDate> dateParsed = LocalDatePattern.CreateWithInvariantCulture("uuuu-MM-dd").Parse(value);
+            return dateParsed.GetValueOrThrow();
+        }
+
+        private LocalDateTime CreateDateTimeValue(string value)
+        {
+            if (this.Timex.Now is true)
             {
-                Value = null;
+                return SystemClock.Instance.InZone(this.timeZone).GetCurrentLocalDateTime();
             }
-            else if (Type is DateTimeV2Type.Time)
+
+            LocalDateTimePattern pattern = LocalDateTimePattern.CreateWithInvariantCulture("uuuu-MM-dd HH:mm:ss");
+            ParseResult<LocalDateTime> dateTimeParsed = pattern.Parse(value);
+            return dateTimeParsed.GetValueOrThrow();
+        }
+
+        private static Range<LocalDate> CreateDateRangeValue(string start, string end)
+        {
+
+            LocalDatePattern pattern = LocalDatePattern.CreateWithInvariantCulture("uuuu-MM-dd");
+            ParseResult<LocalDate> startDateParsed = pattern.Parse(start);
+            ParseResult<LocalDate> endDateParsed = pattern.Parse(end);
+            return new Range<LocalDate>()
             {
-                ParseResult<LocalTime> timeParsed = LocalTimePattern.CreateWithInvariantCulture("HH:mm:ss").Parse(value["value"]);
-                Value = timeParsed.GetValueOrThrow();
-            }
-            else if (Type is DateTimeV2Type.TimeRange)
-            {
-                LocalTimePattern pattern = LocalTimePattern.CreateWithInvariantCulture("HH:mm:ss");
-                ParseResult<LocalTime> startTimeParsed = pattern.Parse(value["start"]);
-                ParseResult<LocalTime> endTimeParsed = pattern.Parse(value["end"]);
-                Value = new Range<LocalTime>()
-                {
-                    Start = startTimeParsed.GetValueOrThrow(),
-                    End = endTimeParsed.GetValueOrThrow()
-                };
-            }
-            else
-            {
-                throw new Exception("A type was passed that hasn't been implemented for the Value in this model.");
-            }
+                Start = startDateParsed.GetValueOrThrow(),
+                End = endDateParsed.GetValueOrThrow()
+            };
         }
     }
 }

@@ -1,5 +1,4 @@
-//    HandyHanselStudios.Parsers, rerepresents the output of the Microsoft
-//    Recognizers using Classes in order to make the usage of them easier
+//    HandyHangoutStudios.Common, common classes for use by the Handy Hangout Dev Team
 //    Copyright (C) 2020 John Marsden
 
 //    This program is free software: you can redistribute it and/or modify
@@ -37,7 +36,7 @@ namespace HandyHangoutStudios.Parsers.Tests
         public void TestDateTimeV2ParseToModelConversion(string input, DateTime refTime, DateTimeV2ModelResult expectedResult)
         {
             IEnumerable<ModelResult> recognizerResults = DateTimeRecognizer.RecognizeDateTime(input, Culture.English, refTime: refTime);
-            DateTimeV2ModelResult testResult = recognizerResults.Select(item => item.ToDateTimeV2ModelResult()).FirstOrDefault();
+            DateTimeV2ModelResult testResult = recognizerResults.Select(item => item.ToDateTimeV2ModelResult(DateTimeZone.Utc)).FirstOrDefault();
 
             Assert.NotNull(testResult);
             Assert.True(testResult.Text == expectedResult.Text);
