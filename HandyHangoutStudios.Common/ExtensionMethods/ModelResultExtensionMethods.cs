@@ -26,7 +26,7 @@ namespace HandyHangoutStudios.Parsers
 {
     public static class ModelResultExtensionMethods
     {
-        public static DateTimeV2ModelResult ToDateTimeV2ModelResult(this ModelResult modelResult, DateTimeZone timeZone)
+        public static DateTimeV2ModelResult ToDateTimeV2ModelResult(this ModelResult modelResult)
         {
             return new DateTimeV2ModelResult()
             {
@@ -34,7 +34,7 @@ namespace HandyHangoutStudios.Parsers
                 TypeName = modelResult.GetDateTimeV2Type(),
                 Start = modelResult.Start,
                 End = modelResult.End,
-                Values = modelResult.GetDateTimeV2Values(timeZone)
+                Values = modelResult.GetDateTimeV2Values()
             };
         }
 
@@ -44,10 +44,10 @@ namespace HandyHangoutStudios.Parsers
             return Enum.Parse<DateTimeV2Type>(modelType, true);
         }
 
-        private static IEnumerable<DateTimeV2Value> GetDateTimeV2Values(this ModelResult model, DateTimeZone timeZone)
+        private static IEnumerable<DateTimeV2Value> GetDateTimeV2Values(this ModelResult model)
         {
             List<Dictionary<string, string>> values = (List<Dictionary<string, string>>) model.Resolution["values"];
-            return values.Select(value => new DateTimeV2Value(value, timeZone)); // timex, type, value
+            return values.Select(value => new DateTimeV2Value(value)); // timex, type, value
         }
     }
 }

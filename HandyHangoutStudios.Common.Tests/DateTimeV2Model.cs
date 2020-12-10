@@ -36,7 +36,7 @@ namespace HandyHangoutStudios.Parsers.Tests
         public void TestDateTimeV2ParseToModelConversion(string input, DateTime refTime, DateTimeV2ModelResult expectedResult)
         {
             IEnumerable<ModelResult> recognizerResults = DateTimeRecognizer.RecognizeDateTime(input, Culture.English, refTime: refTime);
-            DateTimeV2ModelResult testResult = recognizerResults.Select(item => item.ToDateTimeV2ModelResult(DateTimeZone.Utc)).FirstOrDefault();
+            DateTimeV2ModelResult testResult = recognizerResults.Select(item => item.ToDateTimeV2ModelResult()).FirstOrDefault();
 
             Assert.NotNull(testResult);
             Assert.True(testResult.Text == expectedResult.Text);

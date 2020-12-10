@@ -8,12 +8,19 @@
     <Description>A package of common utilities used by the Handy Hangout Studios Devs.
 
 Change Log
+1.1.0 -&gt; 1.2.0
+- Revert the change to parsing as that error should be handled by passing a reference time into the DateTimeRecognizer.RecognizeDateTime()
+
+1.0.1 -&gt; 1.1.0
+- Fixed a bug in parsing where parsing now would return the time for the timezone of the bot. Now, the parsing requires a timezone to reference against
+- Added Html Extension Methods to convert from Html or HtmlNodes from HtmlAgilityPack to DiscordMarkdown strings. 
+
 1.0.0 -&gt; 1.0.1
 - Changed from using Period to Duration in the DateTimeV2Value Class for types of DateTimeV2Type.Duration</Description>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <RepositoryUrl>https://github.com/Handy-Hangout-Studios/HandyHangoutStudios.Common</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>1.0.1</Version>
+    <Version>1.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

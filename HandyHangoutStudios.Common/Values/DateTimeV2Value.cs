@@ -17,7 +17,6 @@
 using HandyHangoutStudios.Parsers.Models;
 using Microsoft.Recognizers.Text.DataTypes.TimexExpression;
 using NodaTime;
-using NodaTime.Extensions;
 using NodaTime.Text;
 using System;
 using System.Collections.Generic;
@@ -30,13 +29,10 @@ namespace HandyHangoutStudios.Parsers.Resolutions
         public DateTimeV2Type Type { get; init; }
         public object Value { get; init; }
 
-        private DateTimeZone timeZone;
-
         public DateTimeV2Value() {}
 
-        public DateTimeV2Value(IDictionary<string, string> value, DateTimeZone timeZone)
+        public DateTimeV2Value(IDictionary<string, string> value)
         {
-            this.timeZone = timeZone;
             Timex = new TimexProperty(value["timex"]);
             Type = Enum.Parse<DateTimeV2Type>(value["type"], true);
 
@@ -66,12 +62,8 @@ namespace HandyHangoutStudios.Parsers.Resolutions
             };
         }
 
-        private LocalTime CreateTimeValue(string value)
+        private static LocalTime CreateTimeValue(string value)
         {
-            if (this.Timex.Now is true)
-            {
-                return SystemClock.Instance.InZone(this.timeZone).GetCurrentLocalDateTime().TimeOfDay;
-            }
             ParseResult<LocalTime> timeParsed = LocalTimePattern.CreateWithInvariantCulture("HH:mm:ss").Parse(value);
             return timeParsed.GetValueOrThrow();
         }
@@ -93,24 +85,14 @@ namespace HandyHangoutStudios.Parsers.Resolutions
             };
         }
 
-        private LocalDate CreateDateValue(string value)
+        private static LocalDate CreateDateValue(string value)
         {
-            if (this.Timex.Now is true)
-            {
-                return SystemClock.Instance.InZone(this.timeZone).GetCurrentLocalDateTime().Date;
-            }
-
             ParseResult<LocalDate> dateParsed = LocalDatePattern.CreateWithInvariantCulture("uuuu-MM-dd").Parse(value);
             return dateParsed.GetValueOrThrow();
         }
 
-        private LocalDateTime CreateDateTimeValue(string value)
+        private static LocalDateTime CreateDateTimeValue(string value)
         {
-            if (this.Timex.Now is true)
-            {
-                return SystemClock.Instance.InZone(this.timeZone).GetCurrentLocalDateTime();
-            }
-
             LocalDateTimePattern pattern = LocalDateTimePattern.CreateWithInvariantCulture("uuuu-MM-dd HH:mm:ss");
             ParseResult<LocalDateTime> dateTimeParsed = pattern.Parse(value);
             return dateTimeParsed.GetValueOrThrow();
