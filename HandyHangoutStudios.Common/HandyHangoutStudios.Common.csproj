@@ -8,6 +8,12 @@
     <Description>A package of common utilities used by the Handy Hangout Studios Devs.
 
 Change Log
+1.2.1 -&gt; 1.2.2
+- DiscordMarkdown strings should now use the minimal number of characters needed without inserting extra characters.
+
+1.2.0 -&gt; 1.2.1
+- Add escape characters to all instances of special characters in a string that will be going to Discord so as to be sure that special characters are preserved
+
 1.1.0 -&gt; 1.2.0
 - Revert the change to parsing as that error should be handled by passing a reference time into the DateTimeRecognizer.RecognizeDateTime()
 
@@ -20,7 +26,7 @@ Change Log
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <RepositoryUrl>https://github.com/Handy-Hangout-Studios/HandyHangoutStudios.Common</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>1.2.0</Version>
+    <Version>1.2.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
